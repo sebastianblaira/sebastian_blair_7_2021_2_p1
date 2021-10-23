@@ -36,7 +36,6 @@ class _HomePageState extends State<HomePage> {
           ]);
       return;
     } else {
-      // aqui va el https con el get
       var url = Uri.parse('https://api.doge-meme.lol/v1/memes');
       Map<String, String> headers = {
         "Content-type": "application/json",
@@ -61,7 +60,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Listado de memes'),
+        backgroundColor: Colors.black,
+        title: Center(
+          child: Text('Listado de Memes',
+              style: TextStyle(
+                fontSize: 27,
+                fontWeight: FontWeight.bold,
+              )),
+        ),
       ),
       body: ListImage(results: results),
     );

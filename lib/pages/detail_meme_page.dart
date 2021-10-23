@@ -13,7 +13,14 @@ class DetailsMemePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalle del meme'),
+        backgroundColor: Colors.black,
+        title: Center(
+          child: Text('Detalle del Meme',
+              style: TextStyle(
+                fontSize: 27,
+                fontWeight: FontWeight.bold,
+              )),
+        ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
