@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:http/http.dart' as http;
+import 'package:memes_app/models/meme_model.dart';
+import 'package:memes_app/pages/detail_meme_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,7 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> results = [];
+  List<Meme> results = [];
 
   @override
   void initState() {
@@ -44,16 +47,11 @@ class _HomePageState extends State<HomePage> {
       final decodeData = json.decode(response.body);
 
       print(decodeData);
-
       if (decodeData['data'] != null && decodeData['data'].length > 0) {
-        for (var i = 0; i < decodeData['data'].length; i++) {
-          final String image = decodeData['data'][i]['submission_url'];
-          if (image.contains('jpg') ||
-              image.contains('png') ||
-              image.contains('gif')) {
-            results.add(decodeData['data'][i]['submission_url']);
-          }
+        for (var meme in decodeData['data']) {
+          results.add(Meme.fromJson(meme));
         }
+
         setState(() {});
       }
     }
@@ -71,7 +69,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 class ListImage extends StatelessWidget {
-  final List<String> results;
+  final List<Meme> results;
 
   const ListImage({
     Key? key,
@@ -84,14 +82,37 @@ class ListImage extends StatelessWidget {
         itemCount: results.length,
         itemBuilder: (_, i) {
           return Container(
-            padding: const EdgeInsets.all(8),
-            child: FadeInImage.assetNetwork(
-              placeholder: 'assets/loading.gif',
-              image: results[i],
-              fit: BoxFit.cover,
-              height: 200.0,
-            ),
-          );
+              padding: const EdgeInsets.all(8),
+              margin: const EdgeInsets.only(bottom: 10),
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  DetailsMemePage(meme: results[i])));
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      child: FadeInImage.assetNetwork(
+                        placeholder: 'assets/loading.gif',
+                        image: results[i].submissionUrl,
+                        fit: BoxFit.cover,
+                        height: 200.0,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    results[i].submissionTitle,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ));
         });
   }
 }
