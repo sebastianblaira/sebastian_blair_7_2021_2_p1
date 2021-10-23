@@ -36,7 +36,8 @@ class _HomePageState extends State<HomePage> {
           ]);
       return;
     } else {
-      var url = Uri.parse('https://api.doge-meme.lol/v1/memes');
+      var url =
+          Uri.parse('https://api.doge-meme.lol/v1/memes/?skip=0&limit=100');
       Map<String, String> headers = {
         "Content-type": "application/json",
         "Accept": "application/json"
@@ -45,10 +46,14 @@ class _HomePageState extends State<HomePage> {
 
       final decodeData = json.decode(response.body);
 
-      print(decodeData);
       if (decodeData['data'] != null && decodeData['data'].length > 0) {
-        for (var meme in decodeData['data']) {
-          results.add(Meme.fromJson(meme));
+        for (var i = 0; i < decodeData['data'].length; i++) {
+          var image = decodeData['data'][i]['submission_url'];
+          if (image.contains('jpg') ||
+              image.contains('png') ||
+              image.contains('gif')) {
+            results.add(Meme.fromJson(decodeData['data'][i]));
+          }
         }
 
         setState(() {});
